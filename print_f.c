@@ -8,6 +8,7 @@
  * Returns the character count printed, or -1 on error.
  */
 
+
 int _printf(const char *format, ...)
 {
 	va_list args;
