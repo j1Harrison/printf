@@ -1,46 +1,49 @@
-#include <stdarg.h>
+#include "main.h"
 #include <unistd.h>
+#include <stdarg.h>
 
-
+/**
+ * _printf - Custom printf function
+ * @format: Format string
+ *
+ * Return: Number of characters printed
+ */
 int _printf(const char *format, ...)
 {
 	va_list args;
+	int chars_written = 0;
+	int i = 0;
+
+	if (!format)
+		return (-1);
 
 	va_start(args, format);
-	int chara_print = 0;
 
-	while (*format && chara_print >= 0)
+	while (format[i])
 	{
-	if (*format == '%')
-	{
-	format++;
-	if (*format == 'c')
-	{
-	char c = va_arg(args, int);
-
-	chara_print += write(1, &c, 1);
-	}
-	else if (*format == 's')
-	{
-		char *str = va_arg(args, char*);
-
-		while (*str)
+		if (format[i] == '%' && format[i + 1] != '\0')
 		{
-		chara_print += write(1, str, 1);
-		str++;
+			i++;
+			if (format[i] == '%')
+			{
+				write(1, &format[i], 1);
+				chars_written++;
+			}
+			else
+			{
+				write(1, "%", 1);
+				write(1, &format[i], 1);
+				chars_written += 2;
+			}
 		}
+		else
+		{
+			write(1, &format[i], 1);
+			chars_written++;
+		}
+		i++;
 	}
-	else if (*format == '%')
-	{
-	chara_print += write(1, "%", 1);
-	}
-	}
-	else
-	{
-	chara_print += write(1, format, 1);
-	}
-	format++;
-	}
+
 	va_end(args);
-	return ((chara_print < 0) ? -1 : chara_print);
+	return (chars_written);
 }
