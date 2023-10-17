@@ -1,13 +1,6 @@
 #include <stdarg.h>
 #include <unistd.h>
 
-/**
- * _printf - Print formatted output to stdout, supporting 'c', 's', and '%'.
- * @format: A format string.
- *
- * Returns the character count printed, or -1 on error.
- */
-
 
 int _printf(const char *format, ...)
 {
