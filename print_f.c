@@ -1,5 +1,15 @@
 #include "main.h"
+#include <stdarg.h>
 #include <unistd.h>
+
+/**
+ * _printf - A simplified implementation of printf that handles %c, %s, and %% specifiers.
+ *
+ * @format: The format string containing conversion specifiers.
+ * @...: Additional arguments based on the specifiers in the format string.
+ *
+ * Return: The number of characters printed (excluding the null byte used to end output to strings).
+ */
 
 int _printf(const char *format, ...)
 {
@@ -20,38 +30,35 @@ int _printf(const char *format, ...)
 		}
 		else
 		{
-			format++;
-		if (*format == '\0')
-		break;
+		format++;
 
-		if (*format == '%')
-		{
-			write(1, format, 1);
-			chara_print++;
-		}
-		else if (*format == 'c')
+		if (*format == 'c')
 		{
 			char c = va_arg(list_of_args, int);
-
 			write(1, &c, 1);
 			chara_print++;
 		}
 		else if (*format == 's')
 		{
-			char *str = va_arg(list_of_args, char*);
+			char *str = va_arg(list_of_args, char *);
 			int str_len = 0;
 
-		while (str[str_len] != '\0')
-		str_len++;
+			while (str[str_len] != '\0')
+			str_len++;
 
 			write(1, str, str_len);
 			chara_print += str_len;
 		}
-		format++;
+		else if (*format == '%')
+		{
+		write(1, "%", 1);
+		chara_print++;
 		}
+	}
+	format++;
 	}
 
 	va_end(list_of_args);
+
 	return (chara_print);
 }
-
