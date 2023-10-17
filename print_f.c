@@ -1,64 +1,52 @@
-#include "main.h"
 #include <stdarg.h>
 #include <unistd.h>
 
 /**
- * _printf - A simplified implementation of printf that handles %c, %s, and %% specifiers.
+ * _printf - Print formatted output to stdout, supporting 'c', 's', and '%'.
+ * @format: A format string.
  *
- * @format: The format string containing conversion specifiers.
- * @...: Additional arguments based on the specifiers in the format string.
- *
- * Return: The number of characters printed (excluding the null byte used to end output to strings).
+ * Returns the character count printed, or -1 on error.
  */
 
 int _printf(const char *format, ...)
 {
+	va_list args;
+
+	va_start(args, format);
 	int chara_print = 0;
-	va_list list_of_args;
 
-	if (format == NULL)
-	return (-1);
-
-	va_start(list_of_args, format);
-
-	while (*format)
+	while (*format && chara_print >= 0)
 	{
-		if (*format != '%')
-		{
-			write(1, format, 1);
-			chara_print++;
-		}
-		else
-		{
-		format++;
+	if (*format == '%')
+	{
+	format++;
+	if (*format == 'c')
+	{
+	char c = va_arg(args, int);
 
-		if (*format == 'c')
-		{
-			char c = va_arg(list_of_args, int);
-			write(1, &c, 1);
-			chara_print++;
-		}
-		else if (*format == 's')
-		{
-			char *str = va_arg(list_of_args, char *);
-			int str_len = 0;
+	chara_print += write(1, &c, 1);
+	}
+	else if (*format == 's')
+	{
+		char *str = va_arg(args, char*);
 
-			while (str[str_len] != '\0')
-			str_len++;
-
-			write(1, str, str_len);
-			chara_print += str_len;
-		}
-		else if (*format == '%')
+		while (*str)
 		{
-		write(1, "%", 1);
-		chara_print++;
+		chara_print += write(1, str, 1);
+		str++;
 		}
+	}
+	else if (*format == '%')
+	{
+	chara_print += write(1, "%", 1);
+	}
+	}
+	else
+	{
+	chara_print += write(1, format, 1);
 	}
 	format++;
 	}
-
-	va_end(list_of_args);
-
-	return (chara_print);
+	va_end(args);
+	return ((chara_print < 0) ? -1 : chara_print);
 }
